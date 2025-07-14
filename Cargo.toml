@@ -1,0 +1,11 @@
+[package]
+name = "hello-wasip3-http"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wit-bindgen = { version = "0.43.0" }
+wit-bindgen-rt = { version = "0.43.0", features = ['async'] }
