@@ -10,7 +10,6 @@ wit_bindgen::generate!({
     path: "wit",
     world: "wasi:http/proxy@0.3.0-draft",
     generate_all,
-    debug: true,
 });
 
 struct Component;
