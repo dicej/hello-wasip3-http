@@ -7,5 +7,8 @@ edition = "2024"
 crate-type = ["cdylib"]
 
 [dependencies]
-wit-bindgen = { version = "0.43.0" }
-wit-bindgen-rt = { version = "0.43.0", features = ['async'] }
+wit-bindgen = { git = "http://github.com/bytecodealliance/wit-bindgen" }
+wit-bindgen-rt = { git = "http://github.com/bytecodealliance/wit-bindgen", features = ["async"] }
+
+[features]
+raw = []
