@@ -22,7 +22,7 @@ mod imp {
 
     struct Component;
 
-    export!(Component);
+    super::export!(Component with_types_in super);
 
     impl Guest for Component {
         async fn handle(_request: Request) -> Result<Response, ErrorCode> {
