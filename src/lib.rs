@@ -66,17 +66,17 @@ mod imp {
     const BLOCKED: u32 = 0xffff_ffff;
     const COMPLETED: u32 = 0x0;
 
-    #[link(wasm_import_module = "$root")]
-    unsafe extern "C" {
-        #[link_name = "[context-get-0]"]
-        fn context_get() -> u32;
-    }
+    // #[link(wasm_import_module = "$root")]
+    // unsafe extern "C" {
+    //     #[link_name = "[context-get-0]"]
+    //     fn context_get() -> u32;
+    // }
 
-    #[link(wasm_import_module = "$root")]
-    unsafe extern "C" {
-        #[link_name = "[context-set-0]"]
-        fn context_set(value: u32);
-    }
+    // #[link(wasm_import_module = "$root")]
+    // unsafe extern "C" {
+    //     #[link_name = "[context-set-0]"]
+    //     fn context_set(value: u32);
+    // }
 
     #[link(wasm_import_module = "$root")]
     unsafe extern "C" {
@@ -116,17 +116,19 @@ mod imp {
         event_count: u32,
     }
 
+    static mut STATE: State = State {
+        set: 0,
+        event_count: 0,
+    };
+
     #[unsafe(export_name = "[async-lift]wasi:http/handler@0.3.0-draft#[async]handle")]
     unsafe extern "C" fn export_async_handle(_request: i32) -> u32 {
         unsafe {
             let set = waitable_set_new();
-            context_set(
-                u32::try_from(Box::into_raw(Box::new(State {
-                    set,
-                    event_count: 0,
-                })) as usize)
-                .unwrap(),
-            );
+            STATE = State {
+                set,
+                event_count: 0,
+            };
 
             let vtable = &wit_future::vtable0::VTABLE;
             let handles = (vtable.new)();
@@ -167,9 +169,7 @@ mod imp {
     #[unsafe(export_name = "[callback][async-lift]wasi:http/handler@0.3.0-draft#[async]handle")]
     unsafe extern "C" fn _callback_async_handle(event0: u32, event1: u32, event2: u32) -> u32 {
         unsafe {
-            let state_ptr = usize::try_from(context_get()).unwrap() as *mut State;
-            let state = &mut *state_ptr;
-            state.event_count += 1;
+            STATE.event_count += 1;
             match event0 {
                 EVENT_STREAM_WRITE => {
                     assert_eq!(
@@ -187,12 +187,11 @@ mod imp {
                 _ => unreachable!(),
             }
 
-            if state.event_count == 2 {
-                waitable_set_drop(state.set);
-                drop(Box::from_raw(state_ptr));
+            if STATE.event_count == 2 {
+                waitable_set_drop(STATE.set);
                 CALLBACK_CODE_EXIT
             } else {
-                CALLBACK_CODE_WAIT | (state.set << 4)
+                CALLBACK_CODE_WAIT | (STATE.set << 4)
             }
         }
     }
