@@ -2,7 +2,7 @@
 
 wit_bindgen::generate!({
     path: "wit",
-    world: "wasi:http/proxy@0.3.0-draft",
+    world: "wasi:http/proxy@0.3.0-rc-2025-08-15",
     generate_all,
 });
 
@@ -17,7 +17,7 @@ mod imp {
             wasi::http::types::{ErrorCode, Fields, Request, Response},
             wit_future, wit_stream,
         },
-        wit_bindgen_rt::async_support,
+        wit_bindgen::rt::async_support,
     };
 
     struct Component;
@@ -54,7 +54,7 @@ mod imp {
             mem::{self, MaybeUninit},
             ptr,
         },
-        wit_bindgen_rt::async_support::{FutureReader, StreamReader},
+        wit_bindgen::rt::async_support::{FutureReader, StreamReader},
     };
 
     const EVENT_FUTURE_WRITE: u32 = 5;
@@ -96,7 +96,7 @@ mod imp {
         pub fn waitable_set_drop(set: u32);
     }
 
-    #[link(wasm_import_module = "[export]wasi:http/handler@0.3.0-draft")]
+    #[link(wasm_import_module = "[export]wasi:http/handler@0.3.0-rc-2025-08-15")]
     unsafe extern "C" {
         #[link_name = "[task-return][async]handle"]
         fn task_return_handle(
@@ -116,7 +116,7 @@ mod imp {
         event_count: u32,
     }
 
-    #[unsafe(export_name = "[async-lift]wasi:http/handler@0.3.0-draft#[async]handle")]
+    #[unsafe(export_name = "[async-lift]wasi:http/handler@0.3.0-rc-2025-08-15#[async]handle")]
     unsafe extern "C" fn export_async_handle(_request: i32) -> u32 {
         unsafe {
             let set = waitable_set_new();
@@ -164,7 +164,7 @@ mod imp {
         }
     }
 
-    #[unsafe(export_name = "[callback][async-lift]wasi:http/handler@0.3.0-draft#[async]handle")]
+    #[unsafe(export_name = "[callback][async-lift]wasi:http/handler@0.3.0-rc-2025-08-15#[async]handle")]
     unsafe extern "C" fn _callback_async_handle(event0: u32, event1: u32, event2: u32) -> u32 {
         unsafe {
             let state_ptr = usize::try_from(context_get()).unwrap() as *mut State;
