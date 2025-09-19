@@ -2,7 +2,7 @@
 
 wit_bindgen::generate!({
     path: "wit",
-    world: "wasi:http/proxy@0.3.0-rc-2025-08-15",
+    world: "wasi:http/proxy@0.3.0-rc-2025-09-16",
     generate_all,
 });
 
@@ -96,7 +96,7 @@ mod imp {
         pub fn waitable_set_drop(set: u32);
     }
 
-    #[link(wasm_import_module = "[export]wasi:http/handler@0.3.0-rc-2025-08-15")]
+    #[link(wasm_import_module = "[export]wasi:http/handler@0.3.0-rc-2025-09-16")]
     unsafe extern "C" {
         #[link_name = "[task-return][async]handle"]
         fn task_return_handle(
@@ -116,7 +116,7 @@ mod imp {
         event_count: u32,
     }
 
-    #[unsafe(export_name = "[async-lift]wasi:http/handler@0.3.0-rc-2025-08-15#[async]handle")]
+    #[unsafe(export_name = "[async-lift]wasi:http/handler@0.3.0-rc-2025-09-16#[async]handle")]
     unsafe extern "C" fn export_async_handle(_request: i32) -> u32 {
         unsafe {
             let set = waitable_set_new();
@@ -164,7 +164,7 @@ mod imp {
         }
     }
 
-    #[unsafe(export_name = "[callback][async-lift]wasi:http/handler@0.3.0-rc-2025-08-15#[async]handle")]
+    #[unsafe(export_name = "[callback][async-lift]wasi:http/handler@0.3.0-rc-2025-09-16#[async]handle")]
     unsafe extern "C" fn _callback_async_handle(event0: u32, event1: u32, event2: u32) -> u32 {
         unsafe {
             let state_ptr = usize::try_from(context_get()).unwrap() as *mut State;
