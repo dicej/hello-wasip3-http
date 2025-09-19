@@ -128,7 +128,7 @@ mod imp {
                 .unwrap(),
             );
 
-            let vtable = &wit_future::vtable0::VTABLE;
+            let vtable = &wit_future::vtable1::VTABLE;
             let handles = (vtable.new)();
             let reader = handles as u32;
             let writer = (handles >> 32) as u32;
